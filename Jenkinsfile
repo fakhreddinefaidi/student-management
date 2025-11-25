@@ -5,7 +5,8 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/fakhreddinefaidi/student-management.git'
+                git branch: 'main',
+                    url: 'https://github.com/fakhreddinefaidi/student-management.git'
             }
         }
 
@@ -23,7 +24,13 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    sh 'echo $PASS | docker login -u $USER --password-stdin'
+                }
             }
         }
 
