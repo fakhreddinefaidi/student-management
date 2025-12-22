@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: monitoring
+spec:
+  containers:
+    - name: prometheus
+      image: prom/prometheus
+      args:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+      ports:
+        - containerPort: 9090
+      volumeMounts:
+        - name: config
+          mountPath: /etc/prometheus
+
+    - name: grafana
+      image: grafana/grafana
+      ports:
+        - containerPort: 3000
+
+  volumes:
+    - name: config
+      configMap:
+        name: prometheus-config
+
